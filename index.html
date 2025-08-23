@@ -24,23 +24,30 @@
             color: #e5e7eb;
             overflow: hidden;
         }
-        #container {
+        /* Pantaila txikietan, canvas-ak altuera finkoa izango du */
+        #canvas-container {
             width: 100vw;
             height: 100vh;
-            position: relative;
         }
-        #info-panel {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background-color: rgba(17, 24, 39, 0.8);
-            padding: 1rem;
-            border-radius: 0.75rem;
-            border: 1px solid rgba(55, 65, 81, 0.5);
-            max-width: 350px;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+        @media (max-width: 768px) {
+            body {
+                overflow: auto; /* Scroll ahalbidetu mugikorrean */
+            }
+            #main-container {
+                flex-direction: column;
+            }
+            #info-panel {
+                position: static;
+                max-width: 100%;
+                border-radius: 0;
+                border: 0;
+                border-bottom: 1px solid #374151;
+            }
+            #canvas-container {
+                height: 60vh; /* Simulazioari altuera eman mugikorrean */
+            }
         }
+        
         .slider-container {
             margin-bottom: 1rem;
         }
@@ -102,15 +109,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="container">
-        <div id="info-panel">
+    <div id="main-container" class="relative flex w-full h-full">
+        <!-- Kontrol panela -->
+        <div id="info-panel" class="md:absolute md:top-5 md:left-5 md:max-w-sm w-full z-10 bg-gray-900/80 md:backdrop-blur-sm md:border md:border-gray-700 md:rounded-lg p-4">
             <h1 class="text-xl font-bold mb-4 text-white">Lurra-Eguzkia Simulagailua</h1>
             
-            <!-- HIRI BILATZAILEA AUTOCOMPLETE-AREKIN -->
             <div class="mb-4 relative" id="search-container">
                 <label for="city-search" class="block mb-2 font-medium">Bilatu hiria</label>
                 <div class="flex">
-                    <input type="text" id="city-search" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-l-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="adib. Ajangiz" autocomplete="off">
+                    <input type="text" id="city-search" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-l-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="adib. Bilbao" autocomplete="off">
                     <button id="search-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r-md">Bilatu</button>
                 </div>
                 <div id="autocomplete-results" class="absolute z-10 w-full bg-gray-800 border border-gray-600 rounded-md mt-1 hidden max-h-48 overflow-y-auto"></div>
@@ -159,21 +166,26 @@
                 <p class="text-xs text-gray-500 mt-2 text-center">Oharra: Orduak tokiko ordu-eremu estandarrean daude, udako ordutegia kontuan hartu gabe.</p>
             </div>
         </div>
+
+        <!-- 3D Simulazioaren edukiontzia -->
+        <div id="canvas-container" class="flex-grow"></div>
     </div>
 
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        
+        const canvasContainer = document.getElementById('canvas-container');
 
         // --- OINARRIZKO KONFIGURAZIOA ---
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
         camera.position.z = 5;
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
-        document.getElementById('container').appendChild(renderer.domElement);
+        canvasContainer.appendChild(renderer.domElement);
 
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
@@ -484,14 +496,19 @@
             renderer.render(scene, camera);
         }
 
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
+        // Leihoaren tamaina aldaketak kudeatu
+        function onWindowResize() {
+            camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
+            renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+        }
+        window.addEventListener('resize', onWindowResize);
+        
+        // Hasierako deia tamaina ondo ezartzeko
+        onWindowResize();
         updateSimulation();
         animate();
     </script>
 </body>
 </html>
+
