@@ -133,12 +133,12 @@
             <div class="grid grid-cols-2 gap-4">
                 <div class="slider-container">
                     <label for="latitude-slider">Latitudea</label>
-                    <input type="range" id="latitude-slider" min="-90" max="90" value="43" step="0.1">
+                    <input type="range" id="latitude-slider" min="-90" max="90" value="43.3" step="0.1">
                     <div id="latitude-display" class="info-display mt-2"></div>
                 </div>
                 <div class="slider-container">
                     <label for="longitude-slider">Longitudea</label>
-                    <input type="range" id="longitude-slider" min="-180" max="180" value="-3" step="0.1">
+                    <input type="range" id="longitude-slider" min="-180" max="180" value="-2.68" step="0.1">
                     <div id="longitude-display" class="info-display mt-2"></div>
                 </div>
             </div>
@@ -180,23 +180,34 @@
         // --- OINARRIZKO KONFIGURAZIOA ---
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
-        camera.position.z = 5;
+        camera.position.z = 15; // Kamera pixka bat atzerago hasieran
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
         renderer.setPixelRatio(window.devicePixelRatio);
+        // Itzalak gaitu
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         canvasContainer.appendChild(renderer.domElement);
 
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.minDistance = 2.5;
-        controls.maxDistance = 10;
+        controls.maxDistance = 50; // Zooma handitu
 
-        // --- ARGIZTAPENA ---
-        const sunLight = new THREE.DirectionalLight(0xffffff, 3);
-        scene.add(sunLight);
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+        // --- ARGIZTAPENA (LINTERNA EFEKTUAREKIN) ---
+        const spotLight = new THREE.SpotLight(0xffffff, 500, 100, Math.PI / 8, 0.2, 2);
+        spotLight.castShadow = true; // Argi honek itzalak sortuko ditu
+        scene.add(spotLight);
+
+        // Argiaren helburua (Lurraren zentroa)
+        const spotLightTarget = new THREE.Object3D();
+        spotLightTarget.position.set(0, 0, 0);
+        scene.add(spotLightTarget);
+        spotLight.target = spotLightTarget;
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // Inguruneko argia, itzalak leuntzeko
         scene.add(ambientLight);
 
         // --- LURRAREN OBJEKTUAK ---
@@ -220,6 +231,8 @@
             roughness: 0.8
         });
         const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+        earth.castShadow = true; // Lurrak itzalak sortzen ditu
+        earth.receiveShadow = true; // Lurrak beste objektuen itzalak jasotzen ditu
         
         earth.rotation.y = -Math.PI / 2;
         earthGroup.add(earth);
@@ -304,11 +317,16 @@
                 }
             }
 
-            // 2. Eguzkiaren posizioa eguneratu
-            const sunDeclination = -AXIAL_TILT * Math.cos((2 * Math.PI / 365) * (dayOfYear + 10));
-            const sunX = 10 * Math.sin(sunDeclination);
-            const sunY = 10 * Math.cos(sunDeclination);
-            sunLight.position.set(0, sunX, sunY);
+            // 2. Argiaren posizioa eguneratu
+            const sunDistance = 20;
+            const sunAngle = (2 * Math.PI / 365) * (dayOfYear + 10);
+            const sunDeclination = -AXIAL_TILT * Math.cos(sunAngle);
+            
+            const sunX = 0;
+            const sunY = sunDistance * Math.sin(sunDeclination);
+            const sunZ = sunDistance * Math.cos(sunDeclination);
+            
+            spotLight.position.set(sunX, sunY, sunZ);
 
             // 3. Markatzailea eguneratu
             const latRad = latitude * (Math.PI / 180);
@@ -320,7 +338,10 @@
             );
 
             // 4. Interfazeko testuak eguneratu
-            dayDisplay.textContent = `${dayOfYear}. eguna (${date.toLocaleDateString('eu-ES', { month: 'long', day: 'numeric' })})`;
+            const hilabeteak = ["Urtarrilak", "Otsailak", "Martxoak", "Apirilak", "Maiatzak", "Ekainak", "Uztailak", "Abuztuak", "Irailak", "Urriak", "Azaroak", "Abenduak"];
+            const monthName = hilabeteak[date.getMonth()];
+            const dayNumber = date.getDate();
+            dayDisplay.textContent = `${dayOfYear}. eguna (${monthName} ${dayNumber})`;
             latitudeDisplay.textContent = `${Math.abs(latitude).toFixed(2)}º ${latitude >= 0 ? 'I' : 'H'}`;
             longitudeDisplay.textContent = `${Math.abs(longitude).toFixed(2)}º ${longitude >= 0 ? 'E' : 'M'}`;
 
