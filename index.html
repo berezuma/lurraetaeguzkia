@@ -117,7 +117,7 @@
             <div class="mb-4 relative" id="search-container">
                 <label for="city-search" class="block mb-2 font-medium">Bilatu hiria</label>
                 <div class="flex">
-                    <input type="text" id="city-search" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-l-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="adib. Bilbao" autocomplete="off">
+                    <input type="text" id="city-search" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-l-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="adib. Ajangiz" autocomplete="off">
                     <button id="search-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r-md">Bilatu</button>
                 </div>
                 <div id="autocomplete-results" class="absolute z-10 w-full bg-gray-800 border border-gray-600 rounded-md mt-1 hidden max-h-48 overflow-y-auto"></div>
@@ -163,7 +163,7 @@
                     </div>
                 </div>
                 <div id="polar-status-display" class="info-display mt-2 text-sm hidden bg-blue-900/50"></div>
-                <p class="text-xs text-gray-500 mt-2 text-center">Oharra: Orduak tokiko eguzki-orduan daude, udako ordutegia kontuan hartu gabe.</p>
+                <p class="text-xs text-gray-500 mt-2 text-center">Oharra: Orduak hautatutako hiriko ordu ofizialari dagozkio (udako ordutegia barne).</p>
             </div>
         </div>
 
@@ -275,25 +275,42 @@
         const searchError = document.getElementById('search-error');
         const autocompleteResults = document.getElementById('autocomplete-results');
         const searchContainer = document.getElementById('search-container');
+        
+        let currentTimeZone = 'Europe/Madrid'; // Balio lehenetsia
+        let lastLatLon = '';
 
         function getDateFromDay(dayOfYear) {
             const date = new Date(new Date().getFullYear(), 0); 
             return new Date(date.setDate(dayOfYear));
         }
 
-        function updateSimulation() {
+        async function updateSimulation() {
             const dayOfYear = parseInt(daySlider.value);
             const latitude = parseFloat(latitudeSlider.value);
             const longitude = parseFloat(longitudeSlider.value);
             const date = getDateFromDay(dayOfYear);
 
-            // 1. Eguzkiaren posizioa eguneratu
+            // 1. Ordu-eremua lortu (beharrezkoa bada)
+            const currentLatLon = `${latitude.toFixed(2)},${longitude.toFixed(2)}`;
+            if (lastLatLon !== currentLatLon) {
+                try {
+                    const tzResponse = await fetch(`https://timeapi.io/api/TimeZone/coordinate?latitude=${latitude}&longitude=${longitude}`);
+                    const tzData = await tzResponse.json();
+                    currentTimeZone = tzData.timeZone;
+                    lastLatLon = currentLatLon;
+                } catch (e) {
+                    console.error("Ezin izan da ordu-eremua lortu:", e);
+                    currentTimeZone = null; // Errore kasuan, fallback
+                }
+            }
+
+            // 2. Eguzkiaren posizioa eguneratu
             const sunDeclination = -AXIAL_TILT * Math.cos((2 * Math.PI / 365) * (dayOfYear + 10));
             const sunX = 10 * Math.sin(sunDeclination);
             const sunY = 10 * Math.cos(sunDeclination);
             sunLight.position.set(0, sunX, sunY);
 
-            // 2. Markatzailea eguneratu
+            // 3. Markatzailea eguneratu
             const latRad = latitude * (Math.PI / 180);
             const lonRad = longitude * (Math.PI / 180);
             latitudeMarker.position.set(
@@ -302,12 +319,12 @@
                 EARTH_RADIUS * Math.cos(latRad) * Math.cos(lonRad)
             );
 
-            // 3. Interfazeko testuak eguneratu
+            // 4. Interfazeko testuak eguneratu
             dayDisplay.textContent = `${dayOfYear}. eguna (${date.toLocaleDateString('eu-ES', { month: 'long', day: 'numeric' })})`;
             latitudeDisplay.textContent = `${Math.abs(latitude).toFixed(2)}º ${latitude >= 0 ? 'I' : 'H'}`;
             longitudeDisplay.textContent = `${Math.abs(longitude).toFixed(2)}º ${longitude >= 0 ? 'E' : 'M'}`;
 
-            // 4. Urtaroa zehaztu
+            // 5. Urtaroa zehaztu
             let season = '';
             if (latitude >= 0) {
                 if (dayOfYear >= 80 && dayOfYear < 172) season = 'Udaberria';
@@ -322,7 +339,7 @@
             }
             seasonDisplay.textContent = season;
 
-            // 5. Egunaren iraupena kalkulatu (TOKIKO ORDUAREKIN ZUZENDUTA)
+            // 6. Egunaren iraupena kalkulatu (TOKIKO ORDU OFIZIALAREKIN)
             const times = SunCalc.getTimes(date, latitude, longitude);
             const sunrise = times.sunrise;
             const sunset = times.sunset;
@@ -330,24 +347,14 @@
             polarStatusDisplay.classList.add('hidden');
 
             if (sunrise instanceof Date && !isNaN(sunrise) && sunset instanceof Date && !isNaN(sunset)) {
-                // Longitudean oinarritutako ordu-desberdintasuna kalkulatu
-                const offsetHours = longitude / 15;
-
-                const formatTimeFromDecimal = (decimalHours) => {
-                    const correctedHours = (decimalHours + 24) % 24;
-                    const h = Math.floor(correctedHours);
-                    const m = Math.round((correctedHours - h) * 60);
-                    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
-                };
-
-                const sunriseUTCDecimal = sunrise.getUTCHours() + sunrise.getUTCMinutes() / 60;
-                const sunsetUTCDecimal = sunset.getUTCHours() + sunset.getUTCMinutes() / 60;
-
-                const sunriseLocalDecimal = sunriseUTCDecimal + offsetHours;
-                const sunsetLocalDecimal = sunsetUTCDecimal + offsetHours;
-
-                sunriseDisplay.textContent = formatTimeFromDecimal(sunriseLocalDecimal);
-                sunsetDisplay.textContent = formatTimeFromDecimal(sunsetLocalDecimal);
+                if (currentTimeZone) {
+                    const options = { timeZone: currentTimeZone, hour: '2-digit', minute: '2-digit', hour12: false };
+                    sunriseDisplay.textContent = sunrise.toLocaleTimeString('eu-ES', options);
+                    sunsetDisplay.textContent = sunset.toLocaleTimeString('eu-ES', options);
+                } else {
+                    sunriseDisplay.textContent = "Errorea";
+                    sunsetDisplay.textContent = "Errorea";
+                }
 
                 const durationMs = sunset.getTime() - sunrise.getTime();
                 const durationHours = Math.floor(durationMs / 3600000);
@@ -386,7 +393,7 @@
                     const city = data[0];
                     latitudeSlider.value = parseFloat(city.lat);
                     longitudeSlider.value = parseFloat(city.lon);
-                    updateSimulation();
+                    await updateSimulation();
                 } else {
                     searchError.classList.remove('hidden');
                 }
@@ -468,11 +475,11 @@
                             const item = document.createElement('div');
                             item.className = 'autocomplete-item';
                             item.textContent = formatBasqueDisplayName(place);
-                            item.addEventListener('click', () => {
+                            item.addEventListener('click', async () => {
                                 citySearchInput.value = place.display_name.split(',')[0];
                                 latitudeSlider.value = parseFloat(place.lat);
                                 longitudeSlider.value = parseFloat(place.lon);
-                                updateSimulation();
+                                await updateSimulation();
                                 autocompleteResults.classList.add('hidden');
                             });
                             autocompleteResults.appendChild(item);
@@ -528,4 +535,3 @@
     </script>
 </body>
 </html>
-
