@@ -117,7 +117,7 @@
             <div class="mb-4 relative" id="search-container">
                 <label for="city-search" class="block mb-2 font-medium">Bilatu hiria</label>
                 <div class="flex">
-                    <input type="text" id="city-search" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-l-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="adib. Ajangiz" autocomplete="off">
+                    <input type="text" id="city-search" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-l-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="adib. Bilbao" autocomplete="off">
                     <button id="search-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r-md">Bilatu</button>
                 </div>
                 <div id="autocomplete-results" class="absolute z-10 w-full bg-gray-800 border border-gray-600 rounded-md mt-1 hidden max-h-48 overflow-y-auto"></div>
@@ -163,7 +163,7 @@
                     </div>
                 </div>
                 <div id="polar-status-display" class="info-display mt-2 text-sm hidden bg-blue-900/50"></div>
-                <p class="text-xs text-gray-500 mt-2 text-center">Oharra: Orduak tokiko ordu-eremu estandarrean daude, udako ordutegia kontuan hartu gabe.</p>
+                <p class="text-xs text-gray-500 mt-2 text-center">Oharra: Orduak tokiko eguzki-orduan daude, udako ordutegia kontuan hartu gabe.</p>
             </div>
         </div>
 
@@ -307,14 +307,14 @@
             latitudeDisplay.textContent = `${Math.abs(latitude).toFixed(2)}º ${latitude >= 0 ? 'I' : 'H'}`;
             longitudeDisplay.textContent = `${Math.abs(longitude).toFixed(2)}º ${longitude >= 0 ? 'E' : 'M'}`;
 
-            // 4. Urtaroa zehaztu (HEMISFERIOAREN ARABERA ZUZENDUTA)
+            // 4. Urtaroa zehaztu
             let season = '';
-            if (latitude >= 0) { // Ipar Hemisferioa
+            if (latitude >= 0) {
                 if (dayOfYear >= 80 && dayOfYear < 172) season = 'Udaberria';
                 else if (dayOfYear >= 172 && dayOfYear < 264) season = 'Uda';
                 else if (dayOfYear >= 264 && dayOfYear < 355) season = 'Udazkena';
                 else season = 'Negua';
-            } else { // Hego Hemisferioa
+            } else {
                 if (dayOfYear >= 80 && dayOfYear < 172) season = 'Udazkena';
                 else if (dayOfYear >= 172 && dayOfYear < 264) season = 'Negua';
                 else if (dayOfYear >= 264 && dayOfYear < 355) season = 'Udaberria';
@@ -322,7 +322,7 @@
             }
             seasonDisplay.textContent = season;
 
-            // 5. Egunaren iraupena kalkulatu
+            // 5. Egunaren iraupena kalkulatu (TOKIKO ORDUAREKIN ZUZENDUTA)
             const times = SunCalc.getTimes(date, latitude, longitude);
             const sunrise = times.sunrise;
             const sunset = times.sunset;
@@ -330,13 +330,30 @@
             polarStatusDisplay.classList.add('hidden');
 
             if (sunrise instanceof Date && !isNaN(sunrise) && sunset instanceof Date && !isNaN(sunset)) {
-                const formatTime = (dateObj) => `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
+                // Longitudean oinarritutako ordu-desberdintasuna kalkulatu
+                const offsetHours = longitude / 15;
+
+                const formatTimeFromDecimal = (decimalHours) => {
+                    const correctedHours = (decimalHours + 24) % 24;
+                    const h = Math.floor(correctedHours);
+                    const m = Math.round((correctedHours - h) * 60);
+                    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+                };
+
+                const sunriseUTCDecimal = sunrise.getUTCHours() + sunrise.getUTCMinutes() / 60;
+                const sunsetUTCDecimal = sunset.getUTCHours() + sunset.getUTCMinutes() / 60;
+
+                const sunriseLocalDecimal = sunriseUTCDecimal + offsetHours;
+                const sunsetLocalDecimal = sunsetUTCDecimal + offsetHours;
+
+                sunriseDisplay.textContent = formatTimeFromDecimal(sunriseLocalDecimal);
+                sunsetDisplay.textContent = formatTimeFromDecimal(sunsetLocalDecimal);
+
                 const durationMs = sunset.getTime() - sunrise.getTime();
                 const durationHours = Math.floor(durationMs / 3600000);
                 const durationMinutes = Math.floor((durationMs % 3600000) / 60000);
-                sunriseDisplay.textContent = formatTime(sunrise);
-                sunsetDisplay.textContent = formatTime(sunset);
                 durationDisplay.textContent = `${durationHours}h ${durationMinutes}m`;
+
             } else {
                 sunriseDisplay.textContent = "--:--";
                 sunsetDisplay.textContent = "--:--";
@@ -511,4 +528,3 @@
     </script>
 </body>
 </html>
-
