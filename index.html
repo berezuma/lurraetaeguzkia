@@ -61,7 +61,7 @@
         }
         
         .slider-container {
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem; /* Aldatuta: 1rem -> 0.75rem */
         }
         .slider-container label {
             display: block;
@@ -124,9 +124,9 @@
     <div id="main-container" class="relative flex w-full h-full">
         <!-- Kontrol panela -->
         <div id="info-panel" class="md:absolute md:top-5 md:left-5 md:max-w-sm w-full z-10 bg-gray-900/80 md:backdrop-blur-sm md:border md:border-gray-700 md:rounded-lg p-4">
-            <h1 class="text-xl font-bold mb-4 text-white">Lurra-Eguzkia Simulagailua</h1>
+            <h1 class="text-xl font-bold mb-3 text-white">Lurra-Eguzkia Simulagailua</h1>
             
-            <div class="mb-4 relative" id="search-container">
+            <div class="mb-3 relative" id="search-container">
                 <label for="city-search" class="block mb-2 font-medium">Bilatu hiria</label>
                 <div class="flex">
                     <input type="text" id="city-search" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-l-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="adib. Ajangiz" autocomplete="off">
@@ -136,7 +136,7 @@
                 <p id="search-error" class="text-red-400 text-xs mt-1 hidden">Hiria ez da aurkitu.</p>
             </div>
 
-            <div class="mb-4 flex justify-center space-x-2">
+            <div class="mb-3 flex justify-center space-x-2">
                 <button id="pause-button" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-md flex items-center justify-center w-full">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     Pausatu
@@ -147,7 +147,7 @@
                 </button>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-3">
                 <button id="toggle-view-button" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md w-full">
                     Lurraren ikuspegia
                 </button>
@@ -176,7 +176,7 @@
                 <div id="season-display" class="info-display text-lg"></div>
             </div>
 
-            <div class="mt-4 pt-4 border-t border-gray-700">
+            <div class="mt-3 pt-3 border-t border-gray-700">
                 <div class="grid grid-cols-3 gap-2 text-center">
                     <div>
                         <p class="text-xs text-gray-400 mb-1">Egunsentia</p>
@@ -195,7 +195,7 @@
                 <p class="text-xs text-gray-500 mt-2 text-center">Oharra: Orduak hautatutako hiriko ordu ofizialari dagozkio (udako ordutegia barne).</p>
                 
                 <!-- Konparaketa atala -->
-                <div class="mt-4">
+                <div class="mt-3">
                     <button id="compare-button" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-md w-full">
                         Konparatu datak
                     </button>
@@ -204,7 +204,7 @@
             </div>
 
             <!-- Konparaketa panela -->
-            <div id="comparison-panel" class="mt-4 pt-4 border-t border-gray-700 hidden">
+            <div id="comparison-panel" class="mt-3 pt-3 border-t border-gray-700 hidden">
                 <h2 class="text-lg font-semibold mb-2 text-white">Konparaketa</h2>
                 <div class="grid grid-cols-2 gap-4 text-center">
                     <!-- 1. Puntua -->
@@ -225,7 +225,7 @@
             </div>
 
             <!-- Egilearen informazioa -->
-            <div class="mt-4 pt-4 border-t border-gray-700 text-center text-xs text-gray-500">
+            <div class="mt-3 pt-3 border-t border-gray-700 text-center text-xs text-gray-500">
                 <p>Egilea: Beñat Erezuma Arisketa</p>
                 <p><a href="https://berezuma.com" target="_blank" class="underline hover:text-gray-300">berezuma.com</a> • Lizentzia: MIT</p>
             </div>
