@@ -316,39 +316,24 @@
             const date = new Date(new Date().getFullYear(), 0); 
             return new Date(date.setDate(dayOfYear));
         }
-
-        async function updateSimulation() {
+        
+        // Funtzio hau berehalako aldaketa bisualetarako da
+        function updateInstantVisuals() {
             const dayOfYear = parseInt(daySlider.value);
             const latitude = parseFloat(latitudeSlider.value);
             const longitude = parseFloat(longitudeSlider.value);
             const date = getDateFromDay(dayOfYear);
 
-            // 1. Ordu-eremua lortu (beharrezkoa bada)
-            const currentLatLon = `${latitude.toFixed(2)},${longitude.toFixed(2)}`;
-            if (lastLatLon !== currentLatLon) {
-                try {
-                    const tzResponse = await fetch(`https://timeapi.io/api/TimeZone/coordinate?latitude=${latitude}&longitude=${longitude}`);
-                    const tzData = await tzResponse.json();
-                    currentTimeZone = tzData.timeZone;
-                    lastLatLon = currentLatLon;
-                } catch (e) {
-                    console.error("Ezin izan da ordu-eremua lortu:", e);
-                    currentTimeZone = null; // Errore kasuan, fallback
-                }
-            }
-
-            // 2. Argiaren posizioa eguneratu
+            // Argiaren posizioa eguneratu
             const sunDistance = 20;
             const sunAngle = (2 * Math.PI / 365) * (dayOfYear + 10);
             const sunDeclination = -AXIAL_TILT * Math.cos(sunAngle);
-            
             const sunX = 0;
             const sunY = sunDistance * Math.sin(sunDeclination);
             const sunZ = sunDistance * Math.cos(sunDeclination);
-            
             spotLight.position.set(sunX, sunY, sunZ);
 
-            // 3. Markatzailea eguneratu
+            // Markatzailea eguneratu
             const latRad = latitude * (Math.PI / 180);
             const lonRad = longitude * (Math.PI / 180);
             latitudeMarker.position.set(
@@ -357,7 +342,7 @@
                 EARTH_RADIUS * Math.cos(latRad) * Math.cos(lonRad)
             );
 
-            // 4. Interfazeko testuak eguneratu
+            // Interfazeko testu batzuk eguneratu
             const hilabeteak = ["Urtarrilak", "Otsailak", "Martxoak", "Apirilak", "Maiatzak", "Ekainak", "Uztailak", "Abuztuak", "Irailak", "Urriak", "Azaroak", "Abenduak"];
             const monthName = hilabeteak[date.getMonth()];
             const dayNumber = date.getDate();
@@ -365,7 +350,7 @@
             latitudeDisplay.textContent = `${Math.abs(latitude).toFixed(2)}º ${latitude >= 0 ? 'I' : 'H'}`;
             longitudeDisplay.textContent = `${Math.abs(longitude).toFixed(2)}º ${longitude >= 0 ? 'E' : 'M'}`;
 
-            // 5. Urtaroa zehaztu
+            // Urtaroa zehaztu
             let season = '';
             if (latitude >= 0) {
                 if (dayOfYear >= 80 && dayOfYear < 172) season = 'Udaberria';
@@ -379,8 +364,30 @@
                 else season = 'Uda';
             }
             seasonDisplay.textContent = season;
+        }
 
-            // 6. Egunaren iraupena kalkulatu (TOKIKO ORDU OFIZIALAREKIN)
+        // Funtzio hau sareko deia eta ondorengo kalkuluetarako da
+        async function updateAsyncData() {
+            const dayOfYear = parseInt(daySlider.value);
+            const latitude = parseFloat(latitudeSlider.value);
+            const longitude = parseFloat(longitudeSlider.value);
+            const date = getDateFromDay(dayOfYear);
+
+            // Ordu-eremua lortu (beharrezkoa bada)
+            const currentLatLon = `${latitude.toFixed(2)},${longitude.toFixed(2)}`;
+            if (lastLatLon !== currentLatLon) {
+                try {
+                    const tzResponse = await fetch(`https://timeapi.io/api/TimeZone/coordinate?latitude=${latitude}&longitude=${longitude}`);
+                    const tzData = await tzResponse.json();
+                    currentTimeZone = tzData.timeZone;
+                    lastLatLon = currentLatLon;
+                } catch (e) {
+                    console.error("Ezin izan da ordu-eremua lortu:", e);
+                    currentTimeZone = null;
+                }
+            }
+            
+            // Egunaren iraupena kalkulatu
             const times = SunCalc.getTimes(date, latitude, longitude);
             const sunrise = times.sunrise;
             const sunset = times.sunset;
@@ -418,6 +425,18 @@
             }
         }
 
+        function updateSimulation() {
+            updateInstantVisuals();
+            
+            // Jarri "Kalkulatzen..." mezua datuak eskuratu bitartean
+            const calculatingText = 'Kalkulatzen...';
+            sunriseDisplay.textContent = calculatingText;
+            sunsetDisplay.textContent = calculatingText;
+            durationDisplay.textContent = calculatingText;
+
+            updateAsyncData();
+        }
+
         // --- HIRI BILATZAILEAREN FUNTZIOA ---
         async function searchCity(cityName) {
             if (!cityName) return;
@@ -434,7 +453,7 @@
                     const city = data[0];
                     latitudeSlider.value = parseFloat(city.lat);
                     longitudeSlider.value = parseFloat(city.lon);
-                    await updateSimulation();
+                    updateSimulation();
                 } else {
                     searchError.classList.remove('hidden');
                 }
@@ -516,11 +535,12 @@
                             const item = document.createElement('div');
                             item.className = 'autocomplete-item';
                             item.textContent = formatBasqueDisplayName(place);
-                            item.addEventListener('click', async () => {
+                            item.addEventListener('mousedown', (event) => { // 'click' -> 'mousedown'
+                                event.preventDefault(); // Input-ak fokua gal ez dezan
                                 citySearchInput.value = place.display_name.split(',')[0];
                                 latitudeSlider.value = parseFloat(place.lat);
                                 longitudeSlider.value = parseFloat(place.lon);
-                                await updateSimulation();
+                                updateSimulation();
                                 autocompleteResults.classList.add('hidden');
                             });
                             autocompleteResults.appendChild(item);
