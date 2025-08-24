@@ -5,10 +5,10 @@ Hezkuntza-helburuetarako diseinatuta dago, ikasleek kontzeptu astronomiko hauek 
 
 Ezaugarriak:
 
-3Dko Lurraren Eredu Interaktiboa: Lurraren esfera hiru dimentsiotan, saguarekin biratu eta zooma egiteko aukerarekin.
-Data eta Kokapen Hautaketa: Graduatzaile sinpleen bidez, urteko eguna, latitudea eta longitudea hauta daitezke.
-Hiri Bilatzaile Adimenduna: Idatzi hiri baten izena eta sistemak automatikoki bilatuko ditu bere koordenatuak, iradokizunak erakutsiz.
-Euskal Herriko Tokiko Izenak: Euskal Herriko herriak bilatzean, izenak formatu egokituan agertzen dira (Herria, Lurraldea, Euskal Herria).
+3Dko Lurraren eredu interaktiboa: Lurraren esfera hiru dimentsiotan, saguarekin biratu eta zooma egiteko aukerarekin.
+Data eta kokapen hautaketa: Graduatzaile sinpleen bidez, urteko eguna, latitudea eta longitudea hauta daitezke.
+Hiri bilatzaile adimenduna: Idatzi hiri baten izena eta sistemak automatikoki bilatuko ditu bere koordenatuak, iradokizunak erakutsiz.
+Euskal Herriko tokiko izenak: Euskal Herriko herriak bilatzean, izenak formatu egokituan agertzen dira (Herria, Lurraldea, Euskal Herria).
 
 Denbora errealeko kalkuluak:
 
