@@ -35,3 +35,8 @@ Ireki index.html fitxategia edozein web nabigatzaile modernotan.
 Erabili graduatzaileak data eta kokapena aldatzeko, edo idatzi hiri baten izena bilatzailean.
 Mugitu saguarekin Lurra biratzeko eta angelu desberdinetatik behatzeko.
 Erabili "Pausatu" / "Hasi" botoiak errotazioa kontrolatzeko.
+
+Egilea eta lizentzia
+
+Proiektu hau Beñat Erezuma Arisketak garatu du (berezuma.com).
+Proiektu hau MIT Lizentziapean argitaratuta dago. Horrek esan nahi du kodea askatasunez erabili, aldatu eta banatu dezakezula, betiere jatorrizko egiletza aitortzen baduzu.
