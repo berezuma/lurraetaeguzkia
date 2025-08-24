@@ -27,6 +27,7 @@ Three.js: 3Dko bistaratzea sortzeko liburutegi nagusia.
 SunCalc.js: Eguzkiaren posizioa eta orduak kalkulatzeko liburutegi astronomikoa.
 Nominatim (OpenStreetMap): Hirien koordenatuak bilatzeko geokodetze zerbitzua.
 TimeAPI.io: Koordenatuen araberako ordu-eremu ofiziala lortzeko zerbitzua.
+Kodea idazteko Gemini AA erabili da.
 
 Nola erabili
 
