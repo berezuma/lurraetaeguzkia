@@ -61,11 +61,11 @@
         }
         
         .slider-container {
-            margin-bottom: 0.75rem; /* Aldatuta: 1rem -> 0.75rem */
+            margin-bottom: 0.75rem;
         }
         .slider-container label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem; /* Tartea txikitu */
             font-weight: 500;
         }
         input[type="range"] {
@@ -85,16 +85,16 @@
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 20px;
-            height: 20px;
+            width: 18px; /* Tamaina txikitu */
+            height: 18px; /* Tamaina txikitu */
             background: #3b82f6;
             cursor: pointer;
             border-radius: 50%;
             border: 2px solid #1f2739;
         }
         input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             background: #3b82f6;
             cursor: pointer;
             border-radius: 50%;
@@ -102,7 +102,7 @@
         }
         .info-display {
             background-color: #1f2937;
-            padding: 0.5rem 0.75rem;
+            padding: 0.35rem 0.6rem; /* Padding txikitu */
             border-radius: 0.5rem;
             text-align: center;
             font-weight: 600;
@@ -124,79 +124,79 @@
     <div id="main-container" class="relative flex w-full h-full">
         <!-- Kontrol panela -->
         <div id="info-panel" class="md:absolute md:top-5 md:left-5 md:max-w-sm w-full z-10 bg-gray-900/80 md:backdrop-blur-sm md:border md:border-gray-700 md:rounded-lg p-4">
-            <h1 class="text-xl font-bold mb-3 text-white">Lurra-Eguzkia Simulagailua</h1>
+            <h1 class="text-lg font-bold mb-3 text-white">Lurra-Eguzkia Simulagailua</h1>
             
             <div class="mb-3 relative" id="search-container">
-                <label for="city-search" class="block mb-2 font-medium">Bilatu hiria</label>
+                <label for="city-search" class="block text-sm mb-1 font-medium">Bilatu hiria</label>
                 <div class="flex">
-                    <input type="text" id="city-search" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-l-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="adib. Ajangiz" autocomplete="off">
-                    <button id="search-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r-md">Bilatu</button>
+                    <input type="text" id="city-search" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-l-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2" placeholder="adib. Ajangiz" autocomplete="off">
+                    <button id="search-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 text-sm rounded-r-md">Bilatu</button>
                 </div>
                 <div id="autocomplete-results" class="absolute z-10 w-full bg-gray-800 border border-gray-600 rounded-md mt-1 hidden max-h-48 overflow-y-auto"></div>
                 <p id="search-error" class="text-red-400 text-xs mt-1 hidden">Hiria ez da aurkitu.</p>
             </div>
 
             <div class="mb-3 flex justify-center space-x-2">
-                <button id="pause-button" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-md flex items-center justify-center w-full">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <button id="pause-button" class="text-sm bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-3 rounded-md flex items-center justify-center w-full">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     Pausatu
                 </button>
-                <button id="play-button" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md flex items-center justify-center w-full hidden">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <button id="play-button" class="text-sm bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-3 rounded-md flex items-center justify-center w-full hidden">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     Hasi
                 </button>
             </div>
 
             <div class="mb-3">
-                <button id="toggle-view-button" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md w-full">
+                <button id="toggle-view-button" class="text-sm bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-md w-full">
                     Lurraren ikuspegia
                 </button>
             </div>
             
             <div class="slider-container">
-                <label for="day-slider">Urteko eguna</label>
+                <label for="day-slider" class="text-sm">Urteko eguna</label>
                 <input type="range" id="day-slider" min="1" max="365" value="169">
-                <div id="day-display" class="info-display mt-2"></div>
+                <div id="day-display" class="info-display text-sm mt-1"></div>
             </div>
             
             <div class="grid grid-cols-2 gap-4">
                 <div class="slider-container">
-                    <label for="latitude-slider">Latitudea</label>
+                    <label for="latitude-slider" class="text-sm">Latitudea</label>
                     <input type="range" id="latitude-slider" min="-90" max="90" value="43.3" step="0.1">
-                    <div id="latitude-display" class="info-display mt-2"></div>
+                    <div id="latitude-display" class="info-display text-sm mt-1"></div>
                 </div>
                 <div class="slider-container">
-                    <label for="longitude-slider">Longitudea</label>
+                    <label for="longitude-slider" class="text-sm">Longitudea</label>
                     <input type="range" id="longitude-slider" min="-180" max="180" value="-2.68" step="0.1">
-                    <div id="longitude-display" class="info-display mt-2"></div>
+                    <div id="longitude-display" class="info-display text-sm mt-1"></div>
                 </div>
             </div>
 
             <div class="mt-2">
-                <div id="season-display" class="info-display text-lg"></div>
+                <div id="season-display" class="info-display text-base"></div>
             </div>
 
             <div class="mt-3 pt-3 border-t border-gray-700">
                 <div class="grid grid-cols-3 gap-2 text-center">
                     <div>
                         <p class="text-xs text-gray-400 mb-1">Egunsentia</p>
-                        <div id="sunrise-display" class="info-display text-sm py-1">--:--</div>
+                        <div id="sunrise-display" class="info-display text-xs py-1">--:--</div>
                     </div>
                     <div>
                         <p class="text-xs text-gray-400 mb-1">Ilunabarra</p>
-                        <div id="sunset-display" class="info-display text-sm py-1">--:--</div>
+                        <div id="sunset-display" class="info-display text-xs py-1">--:--</div>
                     </div>
                     <div>
                         <p class="text-xs text-gray-400 mb-1">Iraupena</p>
-                        <div id="duration-display" class="info-display text-sm py-1">--h --m</div>
+                        <div id="duration-display" class="info-display text-xs py-1">--h --m</div>
                     </div>
                 </div>
-                <div id="polar-status-display" class="info-display mt-2 text-sm hidden bg-blue-900/50"></div>
+                <div id="polar-status-display" class="info-display mt-2 text-xs hidden bg-blue-900/50"></div>
                 <p class="text-xs text-gray-500 mt-2 text-center">Oharra: Orduak hautatutako hiriko ordu ofizialari dagozkio (udako ordutegia barne).</p>
                 
                 <!-- Konparaketa atala -->
                 <div class="mt-3">
-                    <button id="compare-button" class="bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-md w-full">
+                    <button id="compare-button" class="text-sm bg-teal-600 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded-md w-full">
                         Konparatu datak
                     </button>
                     <p id="compare-instruction" class="text-xs text-center text-teal-300 mt-2 hidden">Orain, mugitu 'Urteko eguna' graduatzailea bigarren data bat aukeratzeko.</p>
@@ -205,22 +205,22 @@
 
             <!-- Konparaketa panela -->
             <div id="comparison-panel" class="mt-3 pt-3 border-t border-gray-700 hidden">
-                <h2 class="text-lg font-semibold mb-2 text-white">Konparaketa</h2>
+                <h2 class="text-base font-semibold mb-2 text-white">Konparaketa</h2>
                 <div class="grid grid-cols-2 gap-4 text-center">
                     <!-- 1. Puntua -->
                     <div>
                         <p id="compare-date-1" class="text-xs font-bold text-gray-300 mb-1">--</p>
-                        <div id="compare-duration-1" class="info-display text-sm py-1 bg-gray-800">--h --m</div>
+                        <div id="compare-duration-1" class="info-display text-xs py-1 bg-gray-800">--h --m</div>
                     </div>
                     <!-- 2. Puntua -->
                     <div>
                         <p id="compare-date-2" class="text-xs font-bold text-gray-300 mb-1">--</p>
-                        <div id="compare-duration-2" class="info-display text-sm py-1">--h --m</div>
+                        <div id="compare-duration-2" class="info-display text-xs py-1">--h --m</div>
                     </div>
                 </div>
-                <div class="mt-3 text-center">
+                <div class="mt-2 text-center">
                     <p class="text-xs text-gray-400 mb-1">Aldea</p>
-                    <div id="compare-diff" class="info-display text-base py-1 font-bold bg-gray-700">--h --m</div>
+                    <div id="compare-diff" class="info-display text-sm py-1 font-bold bg-gray-700">--h --m</div>
                 </div>
             </div>
 
