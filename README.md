@@ -15,8 +15,8 @@ Denbora errealeko kalkuluak:
 Hautatutako kokapenaren egunsenti eta ilunabar ofizialak (ordu-eremua eta udako ordutegia kontuan hartuta).
 Egunaren iraupen zehatza.
 Hemisferioaren araberako urtaroen bistaratzea.
-Errotazio Kontrola: "Pausatu" eta "Hasi" botoiak, Lurraren errotazioa nahi denean gelditzeko edo abiarazteko.
-Diseinu Moldagarria (Responsive): Simulagailua behar bezala ikusten da bai ordenagailuetan, bai gailu mugikorretan.
+Errotazio kontrola: "Pausatu" eta "Hasi" botoiak, Lurraren errotazioa nahi denean gelditzeko edo abiarazteko.
+Diseinu moldagarria (Responsive): Simulagailua behar bezala ikusten da bai ordenagailuetan, bai gailu mugikorretan.
 
 Proiektu hau teknologia hauekin garatu da:
 
